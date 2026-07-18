@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrustLens AI — Premium Fake Review Detector</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="TrustLens AI is an award-winning fake review detector using Machine Learning, NLP, and Explainable AI. Protect your business from misleading ratings.">
+  <meta name="keywords" content="fake review detection, trust lens, AI review analyzer, NLP spam, machine learning fake reviews">
+  <meta name="author" content="TrustLens Team">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="./css/style.css">
+  
+  <!-- Lucide Icons for vector-perfect crisp icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="dark-theme">
+
+  <!-- Background Layer (Particles, Blobs & Grid) -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="grid-overlay"></div>
+
+  <!-- History Sidebar -->
+  <aside id="historySidebar" class="history-sidebar">
+    <div class="sidebar-header">
+      <div class="logo-flex">
+        <i data-lucide="shield-check" class="sidebar-logo-icon"></i>
+        <span>Analysis History</span>
+      </div>
+      <button id="closeSidebarBtn" class="icon-btn-secondary" title="Close Sidebar">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    
+    <div class="history-list-wrapper">
+      <div id="historyPlaceholder" class="history-placeholder">
+        <i data-lucide="database" class="placeholder-icon"></i>
+        <p>No previous scans found</p>
+        <span class="placeholder-sub">Scanned reviews will appear here.</span>
+      </div>
+      <ul id="historyList" class="history-list">
+        <!-- Rendered dynamically from LocalStorage -->
+      </ul>
+    </div>
+
+    <div class="sidebar-footer">
+      <button id="clearHistoryBtn" class="btn-clear-history">
+        <i data-lucide="trash-2"></i>
+        <span>Clear History</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Sticky Glass Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <!-- Sidebar Toggle Trigger -->
+        <button id="toggleSidebarBtn" class="icon-btn" title="Open History">
+          <i data-lucide="history"></i>
+        </button>
+        <div class="logo" id="navLogoBtn" title="Back to Home">
+          <div class="logo-mark">
+            <span class="logo-dot"></span>
+          </div>
+          <span class="logo-text">TrustLens<span class="logo-highlight">AI</span></span>
+        </div>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="#aboutSection" class="nav-link">About</a></li>
+        <li><a href="#howItWorksSection" class="nav-link">How It Works</a></li>
+        <li><a href="#featuresSection" class="nav-link">Features</a></li>
+        <li><a href="#technologySection" class="nav-link">Technology</a></li>
+        <li><a href="#faqSection" class="nav-link">FAQ</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <!-- Theme Switcher -->
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="Switch Theme">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+        </button>
+        
+        <button class="nav-btn-primary" id="navTryBtn">
+          Try Demo
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="app-container" id="appMain">
+    
+    <!-- Hero / Landing Section -->
+    <section class="hero-section" id="heroSection">
+      <div class="hero-text-col">
+        <h1 class="hero-tagline">
+          <span class="tagline-line">Detect deceptive</span>
+          <span class="tagline-line">reviews</span>
+          <span class="tagline-accent">before they</span>
+          <span class="tagline-accent">mislead you.</span>
+        </h1>
+        <div class="hero-cta-buttons">
+          <button class="btn-primary-glow" id="heroStartBtn">
+            <span>Analyze Review</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Trust Galaxy: live orbital visualization built from scan history -->
+      <div class="trust-galaxy-wrapper" id="trustGalaxyWrapper">
+
+        <div class="galaxy-empty-state" id="galaxyEmptyState">
+          <i data-lucide="orbit"></i>
+          <p>Run your first scan to bring the galaxy to life</p>
+        </div>
+
+        <div class="galaxy-stage" id="galaxyStage">
+          <div class="galaxy-ring ring-1"></div>
+          <div class="galaxy-ring ring-2"></div>
+          <div class="galaxy-ring ring-3"></div>
+          <div class="galaxy-ring ring-4"></div>
+
+          <div class="galaxy-core" id="galaxyCore">
+            <span class="galaxy-core-value" id="galaxyCoreValue">0</span>
+            <span class="galaxy-core-label">Scanned</span>
+          </div>
+
+          <div class="galaxy-orbit orbit-1">
+            <button class="galaxy-node node-genuine" id="nodeGenuine" data-stat="genuine" type="button" aria-label="Genuine reviews">
+              <i data-lucide="shield-check"></i>
+            </button>
+          </div>
+          <div class="galaxy-orbit orbit-2">
+            <button class="galaxy-node node-fake" id="nodeFake" data-stat="fake" type="button" aria-label="Fake reviews caught">
+              <i data-lucide="alert-triangle"></i>
+            </button>
+          </div>
+          <div class="galaxy-orbit orbit-3">
+            <button class="galaxy-node node-trust" id="nodeTrust" data-stat="trust" type="button" aria-label="Average trust score">
+              <i data-lucide="heart-handshake"></i>
+            </button>
+          </div>
+          <div class="galaxy-orbit orbit-4">
+            <button class="galaxy-node node-confidence" id="nodeConfidence" data-stat="confidence" type="button" aria-label="Average confidence">
+              <i data-lucide="gauge"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hover tooltip -->
+        <div class="galaxy-tooltip hidden" id="galaxyTooltip"></div>
+
+        <!-- Click detail panel -->
+        <div class="galaxy-detail-panel hidden" id="galaxyDetailPanel">
+          <button class="galaxy-detail-close" id="galaxyDetailClose" aria-label="Close">
+            <i data-lucide="x"></i>
+          </button>
+          <span class="galaxy-detail-label" id="galaxyDetailLabel">Genuine Reviews</span>
+          <span class="galaxy-detail-value" id="galaxyDetailValue">0</span>
+          <p class="galaxy-detail-desc" id="galaxyDetailDesc"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Workspace -->
+    <div class="workspace-grid" id="workspaceGrid">
+      
+      <!-- Left Column: Input Card -->
+      <div class="workspace-left" id="inputColumn">
+        <div class="glass-card analyzer-card">
+          <div class="card-header">
+            <div class="card-header-info">
+              <i data-lucide="file-search-2" class="card-icon text-glow-blue"></i>
+              <h2>Review Analyzer</h2>
+            </div>
+            <span class="engine-indicator">BERT-Ensemble Active</span>
+          </div>
+
+          <form id="analyzerForm" onsubmit="return false;">
+            <!-- Review Text Area -->
+            <div class="input-group">
+              <label for="review">Product Review Content</label>
+              <div class="textarea-wrapper">
+                <textarea id="review" placeholder="Paste any product review here (e.g. Amazon, Google Maps, Yelp, App Store) to analyze its credibility..." required></textarea>
+                <div class="word-counter-overlay"><span id="wordCountLabel">0</span> words</div>
+              </div>
+            </div>
+
+            <!-- Rating Selector and Slider -->
+            <div class="input-group">
+              <div class="label-flex">
+                <label for="rating">Product Rating</label>
+                <span id="ratingVal" class="badge-value">3.0 Stars</span>
+              </div>
+              <div class="rating-sync-container">
+                <!-- Stars Indicator -->
+                <div class="stars-selector" id="starsSelector">
+                  <i data-lucide="star" class="star-btn" data-value="1"></i>
+                  <i data-lucide="star" class="star-btn" data-value="2"></i>
+                  <i data-lucide="star" class="star-btn" data-value="3"></i>
+                  <i data-lucide="star" class="star-btn" data-value="4"></i>
+                  <i data-lucide="star" class="star-btn" data-value="5"></i>
+                </div>
+                <!-- Dual synchronization Slider -->
+                <input type="range" id="rating" min="1" max="5" step="0.5" value="3.0">
+              </div>
+            </div>
+
+            <!-- Submit Button & Loader -->
+            <button type="submit" id="analyzeBtn" class="btn-submit-glow">
+              <span class="btn-text">Analyze Review</span>
+              <i data-lucide="zap"></i>
+            </button>
+
+            <!-- Loading scanning status overlay (nested within analyzer card or full cover) -->
+            <div id="loading" class="scanning-overlay hidden">
+              <div class="scanning-content">
+                <div class="scanner-laser"></div>
+                <div class="spinner-premium"></div>
+                
+                <h3 id="scanningStatusText">Scanning review...</h3>
+                
+                <!-- Custom status steps indicator -->
+                <ul class="scanning-steps">
+                  <li id="step1" class="step-item"><i data-lucide="check"></i> <span>Parsing linguistic tokens</span></li>
+                  <li id="step2" class="step-item"><i data-lucide="check"></i> <span>Analyzing sentiment vectors</span></li>
+                  <li id="step3" class="step-item"><i data-lucide="check"></i> <span>Extracting feature profiles</span></li>
+                  <li id="step4" class="step-item"><i data-lucide="check"></i> <span>Evaluating models & reliability</span></li>
+                  <li id="step5" class="step-item"><i data-lucide="check"></i> <span>Assembling XAI explanation</span></li>
+                </ul>
+
+                <!-- Scanning progress bar -->
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="scanningProgressBar"></div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Results Dashboard -->
+      <div class="workspace-right" id="resultColumn">
+        <section id="resultSection" class="results-dashboard glass-card hidden">
+          
+          <!-- Dashboard Header -->
+          <div class="dashboard-section-header">
+            <div class="title-wrap">
+              <i data-lucide="layout-dashboard" class="card-icon text-glow-cyan"></i>
+              <h2>Analysis Report</h2>
+            </div>
+          </div>
+
+          <!-- Top Row: Verdict Summary Grid -->
+          <div class="verdict-row-grid">
+            
+            <!-- Verdict Badge Card -->
+            <div class="glass-card verdict-card" id="predictionCard">
+              <div class="card-label">AI VERDICT</div>
+              <div class="verdict-status-wrapper">
+                <div id="verdictIconContainer" class="verdict-icon-glow">
+                  <i data-lucide="alert-triangle" class="danger-text"></i>
+                </div>
+                <div>
+                  <h3 id="verdictTitle" class="verdict-title">Fake Review</h3>
+                  <p id="verdictSubtext" class="verdict-description">High probability of manipulation.</p>
+                  <p id="verdictMeta" class="verdict-meta"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Circular Confidence Progress -->
+            <div class="glass-card confidence-card">
+              <div class="card-label">CONFIDENCE SCORE</div>
+              <div class="circular-progress-wrap">
+                <svg width="120" height="120" viewBox="0 0 120 120" class="progress-svg">
+                  <!-- Grey track -->
+                  <circle cx="60" cy="60" r="50" class="circle-track"></circle>
+                  <!-- Foreground animated circle -->
+                  <circle cx="60" cy="60" r="50" class="circle-indicator" id="confidenceCircle" stroke-dasharray="314.15" stroke-dashoffset="314.15"></circle>
+                </svg>
+                <div class="circle-center-text">
+                  <span id="confidencePercentage">0%</span>
+                  <span class="subtext">Confidence</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Risk Level Card -->
+            <div class="glass-card risk-card-wrapper" id="riskCard">
+              <div class="card-label">RISK FACTOR</div>
+              <div class="risk-meter-wrapper">
+                <div class="risk-badge-display">
+                  <span class="risk-dot" id="riskDot"></span>
+                  <span id="riskLabel" class="risk-label">High Risk</span>
+                </div>
+                <!-- Mini visual slider showing Low/Medium/High indicator -->
+                <div class="risk-bar-indicator">
+                  <span class="risk-marker" id="riskMarker" style="left: 83%;"></span>
+                  <div class="risk-segment low"></div>
+                  <div class="risk-segment medium"></div>
+                  <div class="risk-segment high"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Advanced Analysis Toggle -->
+          <button id="advancedToggleBtn" class="btn-advanced-toggle" type="button" aria-expanded="false">
+            <span>Show Advanced Analysis</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+
+          <div id="advancedAnalysisSection" class="advanced-analysis-section">
+
+          <!-- Mid Row: Heatmap & Explanations -->
+          <div class="mid-row-grid">
+            
+            <!-- Suspicious Word Heatmap overlay card -->
+            <div class="glass-card heatmap-card">
+              <div class="card-header-small">
+                <i data-lucide="eye" class="icon-small text-glow-blue"></i>
+                <h3>Review Heatmap</h3>
+              </div>
+              <p class="card-desc">Red highlighted words trigger spam/manipulation alerts.</p>
+              <div id="reviewHeatmap" class="heatmap-container">
+                <!-- Highlighted text injected dynamically -->
+              </div>
+            </div>
+
+            <!-- AI Explanation sequential bullets -->
+            <div class="glass-card explanation-card">
+              <div class="card-header-small">
+                <i data-lucide="brain-circuit" class="icon-small text-glow-cyan"></i>
+                <h3>AI Explanation</h3>
+              </div>
+              <p class="card-desc">Decision factors explaining review authenticity classification.</p>
+              <ul id="reasonsList" class="reasons-list">
+                <!-- Injected dynamically -->
+              </ul>
+            </div>
+
+          </div>
+
+          <!-- Stats Cards Section -->
+          <div class="stats-cards-wrapper" id="statisticsSection">
+            <!-- Sentiment Card -->
+            <div class="glass-card stat-badge-card">
+              <div class="stat-icon-wrapper blue">
+                <i data-lucide="smile" id="sentimentIcon"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-title">Sentiment</span>
+                <span class="stat-value" id="statSentiment">Positive</span>
+              </div>
+            </div>
+
+            <!-- Word Count Card -->
+            <div class="glass-card stat-badge-card">
+              <div class="stat-icon-wrapper cyan">
+                <i data-lucide="hash"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-title">Word Count</span>
+                <span class="stat-value" id="statWords">28</span>
+              </div>
+            </div>
+
+            <!-- Emoji Count Card -->
+            <div class="glass-card stat-badge-card">
+              <div class="stat-icon-wrapper purple">
+                <i data-lucide="laugh"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-title">Emoji Count</span>
+                <span class="stat-value" id="statEmojis">0</span>
+              </div>
+            </div>
+
+            <!-- URLs Count Card -->
+            <div class="glass-card stat-badge-card">
+              <div class="stat-icon-wrapper pink">
+                <i data-lucide="link"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-title">Links (URLs)</span>
+                <span class="stat-value" id="statUrls">0</span>
+              </div>
+            </div>
+
+            <!-- Caps Percentage Card -->
+            <div class="glass-card stat-badge-card">
+              <div class="stat-icon-wrapper orange">
+                <i data-lucide="type"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-title">ALL CAPS Words</span>
+                <span class="stat-value" id="statCaps">0</span>
+              </div>
+            </div>
+
+            <!-- Promotional Score Card -->
+            <div class="glass-card stat-badge-card">
+              <div class="stat-icon-wrapper red">
+                <i data-lucide="badge-percent"></i>
+              </div>
+              <div class="stat-info">
+                <span class="stat-title">Promotional words</span>
+                <span class="stat-value" id="statPromo">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Features progress & confidence timeline -->
+          <div class="bottom-row-grid">
+            
+            <!-- Feature Importance -->
+            <div class="glass-card feature-importance-card">
+              <div class="card-header-small">
+                <i data-lucide="sliders" class="icon-small text-glow-blue"></i>
+                <h3>Feature Importance</h3>
+              </div>
+              <p class="card-desc">Linguistic features contributing to prediction output.</p>
+              
+              <div id="featureImportance" class="importance-bars-wrapper">
+                <!-- Items are populated dynamically -->
+                <div class="importance-bar-group">
+                  <div class="bar-label">
+                    <span>Sentiment Alignment</span>
+                    <span id="featValSentiment">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill" id="featFillSentiment" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="importance-bar-group">
+                  <div class="bar-label">
+                    <span>Promotional Content Density</span>
+                    <span id="featValPromo">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill" id="featFillPromo" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="importance-bar-group">
+                  <div class="bar-label">
+                    <span>Repetitive Word Rate</span>
+                    <span id="featValRepeat">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill" id="featFillRepeat" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="importance-bar-group">
+                  <div class="bar-label">
+                    <span>Emotional Wording</span>
+                    <span id="featValEmotion">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill" id="featFillEmotion" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <div class="importance-bar-group">
+                  <div class="bar-label">
+                    <span>Abnormal Emoji / Caps Usage</span>
+                    <span id="featValAbnormal">0%</span>
+                  </div>
+                  <div class="bar-track">
+                    <div class="bar-fill" id="featFillAbnormal" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Confidence Progress Timeline -->
+            <div class="glass-card timeline-card">
+              <div class="card-header-small">
+                <div class="flex-align">
+                  <i data-lucide="trending-up" class="icon-small text-glow-cyan"></i>
+                  <h3>AI Confidence Timeline</h3>
+                </div>
+                <span class="badge-mini">Model Pipeline Steps</span>
+              </div>
+              <p class="card-desc">Confidence progression during stage-wise classifier execution.</p>
+              
+              <div class="timeline-chart-container">
+                <!-- Dynamic SVG drawing -->
+                <svg viewBox="0 0 400 180" class="timeline-svg" id="timelineSvg">
+                  <!-- Definitions for gradients -->
+                  <defs>
+                    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#D9407A" stop-opacity="0.25"/>
+                      <stop offset="100%" stop-color="#D9407A" stop-opacity="0.0"/>
+                    </linearGradient>
+                    <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#D9407A" />
+                      <stop offset="100%" stop-color="#D9407A" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <!-- Y Axis Gridlines -->
+                  <line x1="40" y1="20" x2="380" y2="20" class="grid-line"></line>
+                  <line x1="40" y1="60" x2="380" y2="60" class="grid-line"></line>
+                  <line x1="40" y1="100" x2="380" y2="100" class="grid-line"></line>
+                  <line x1="40" y1="140" x2="380" y2="140" class="grid-line"></line>
+                  
+                  <!-- Y Labels -->
+                  <text x="30" y="24" class="axis-label">100</text>
+                  <text x="30" y="64" class="axis-label">60</text>
+                  <text x="30" y="104" class="axis-label">30</text>
+                  <text x="30" y="144" class="axis-label">0</text>
+
+                  <!-- Filled Area under Line (drawn by app.js) -->
+                  <path d="" id="chartAreaPath" fill="url(#chartGradient)"></path>
+                  
+                  <!-- The main confidence line path -->
+                  <path d="" id="chartLinePath" fill="none" stroke="url(#lineGradient)" stroke-width="3.5" stroke-linecap="round"></path>
+                  
+                  <!-- Dots for steps -->
+                  <g id="chartDotsGroup"></g>
+
+                  <!-- X Labels -->
+                  <text x="50" y="165" class="axis-label x-align">Linguistic</text>
+                  <text x="150" y="165" class="axis-label x-align">TF-IDF VSM</text>
+                  <text x="250" y="165" class="axis-label x-align">BERT Sem</text>
+                  <text x="350" y="165" class="axis-label x-align">NLP Ensem</text>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+
+    <!-- ================= ABOUT ================= -->
+    <section id="aboutSection" class="content-section about-section">
+      <div class="glass-card about-card">
+        <span class="section-eyebrow">About TrustLens AI</span>
+        <h2>Built for anyone who reads reviews before they buy</h2>
+        <p>Fake reviews skew ratings, bury real feedback, and cost buyers money. TrustLens AI gives shoppers, sellers, and researchers a fast, transparent way to check whether a review reflects a real experience — and shows its reasoning instead of just handing back a label.</p>
+      </div>
+    </section>
+    <!-- ================= HOW IT WORKS ================= -->
+    <section id="howItWorksSection" class="content-section how-it-works-section">
+      <div class="section-header-centered">
+        <span class="section-eyebrow">Process</span>
+        <h2>From paste to verdict in four steps</h2>
+        <p>The same pipeline runs on every scan, in this order.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="glass-card step-tile">
+          <span class="step-number">01</span>
+          <h3>Paste the review</h3>
+          <p>Drop in text from Amazon, Google Maps, Yelp, or any App Store listing.</p>
+        </div>
+        <div class="glass-card step-tile">
+          <span class="step-number">02</span>
+          <h3>Set the star rating</h3>
+          <p>Match the rating that was left alongside the review — it's checked against the text itself.</p>
+        </div>
+        <div class="glass-card step-tile">
+          <span class="step-number">03</span>
+          <h3>BERT-Ensemble analyzes it</h3>
+          <p>Linguistic, sentiment, and feature models run in sequence to build a confidence score.</p>
+        </div>
+        <div class="glass-card step-tile">
+          <span class="step-number">04</span>
+          <h3>Read the explainable verdict</h3>
+          <p>Get the classification plus the heatmap and reasoning behind it — no black box.</p>
+        </div>
+      </div>
+    </section>
+    <!-- ================= FEATURES ================= -->
+    <section id="featuresSection" class="content-section features-section">
+      <div class="section-header-centered">
+        <span class="section-eyebrow">Capabilities</span>
+        <h2>What TrustLens checks for you</h2>
+        <p>One paste gets you a verdict, a confidence score, and the reasoning behind it — not just a black-box label.</p>
+      </div>
+      <div class="features-grid">
+        <div class="glass-card feature-tile">
+          <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+          <h3>Genuine vs. Fake Verdict</h3>
+          <p>Every review is classified as genuine or manipulated, with a plain-language summary of why.</p>
+        </div>
+        <div class="glass-card feature-tile">
+          <div class="feature-icon"><i data-lucide="gauge"></i></div>
+          <h3>Confidence & Risk Scoring</h3>
+          <p>See how certain the model is, plus a Low / Medium / High risk rating you can act on.</p>
+        </div>
+        <div class="glass-card feature-tile">
+          <div class="feature-icon"><i data-lucide="eye"></i></div>
+          <h3>Suspicious Word Heatmap</h3>
+          <p>The exact phrases that triggered a flag are highlighted directly in your review text.</p>
+        </div>
+        <div class="glass-card feature-tile">
+          <div class="feature-icon"><i data-lucide="sliders"></i></div>
+          <h3>Explainable Feature Breakdown</h3>
+          <p>Sentiment alignment, promotional density, repetition, and more — see what actually moved the score.</p>
+        </div>
+        <div class="glass-card feature-tile">
+          <div class="feature-icon"><i data-lucide="orbit"></i></div>
+          <h3>Trust Galaxy Dashboard</h3>
+          <p>Every scan you run feeds a live view of your genuine-vs-fake track record over time.</p>
+        </div>
+      </div>
+    </section>
+    <!-- ================= TECHNOLOGY ================= -->
+    <section id="technologySection" class="content-section technology-section">
+      <div class="section-header-centered">
+        <span class="section-eyebrow">Under the hood</span>
+        <h2>Built on an explainable ML pipeline</h2>
+        <p>TrustLens combines classic NLP features with an ensemble classifier, then explains its own reasoning.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="glass-card tech-tile">
+          <span class="tech-badge">NLP</span>
+          <h3>TF-IDF & Linguistic Features</h3>
+          <p>Word patterns, punctuation, capitalization, and vocabulary richness are extracted from every review.</p>
+        </div>
+        <div class="glass-card tech-tile">
+          <span class="tech-badge">Ensemble</span>
+          <h3>BERT-Ensemble Classifier</h3>
+          <p>A scikit-learn / XGBoost ensemble weighs each feature to produce the final authenticity score.</p>
+        </div>
+        <div class="glass-card tech-tile">
+          <span class="tech-badge">XAI</span>
+          <h3>Explainable AI Layer</h3>
+          <p>Every verdict comes with the specific signals that drove it — sentiment mismatch, promo density, and more.</p>
+        </div>
+        <div class="glass-card tech-tile">
+          <span class="tech-badge">API</span>
+          <h3>FastAPI Backend</h3>
+          <p>A dedicated prediction service scores reviews in real time and powers the Chrome extension too.</p>
+        </div>
+      </div>
+    </section>
+    <!-- ================= FAQ ================= -->
+    <section id="faqSection" class="content-section faq-section">
+      <div class="section-header-centered">
+        <span class="section-eyebrow">Questions</span>
+        <h2>Frequently asked questions</h2>
+      </div>
+      <div class="faq-list">
+        <div class="glass-card faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span>What counts as a "fake" review?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>A review flagged as fake shows patterns common to manipulated or incentivized reviews — mismatched sentiment and star rating, promotional language, spam links, or repetitive hype phrasing.</p>
+          </div>
+        </div>
+        <div class="glass-card faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span>Does TrustLens store the reviews I analyze?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Your scan history is saved locally in your browser so you can revisit past results. It isn't sent anywhere beyond the analysis request itself.</p>
+          </div>
+        </div>
+        <div class="glass-card faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span>Can I use this on any review site?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Yes — paste text from Amazon, Google Maps, Yelp, App Store listings, or anywhere else. The Chrome extension also scans Amazon and Flipkart pages automatically.</p>
+          </div>
+        </div>
+        <div class="glass-card faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            <span>How accurate is the model?</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="faq-answer">
+            <p>The confidence score shown with every verdict reflects the model's own certainty — treat borderline scores as a signal to look closer, not a final judgment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sticky footer -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 TrustLens AI. Designed for professional SaaS architectures.</p>
+      <div class="footer-links">
+        <a href="#" id="privacyPolicyLink">Privacy Policy</a>
+        <span class="dot-separator"></span>
+        <a href="#" id="termsOfUseLink">Terms of Use</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Legal Modals -->
+  <div class="legal-modal-overlay hidden" id="privacyPolicyModal">
+    <div class="glass-card legal-modal">
+      <div class="legal-modal-header">
+        <h2>Privacy Policy</h2>
+        <button class="icon-btn-secondary legal-modal-close" data-close-modal aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="legal-modal-body">
+        <p class="legal-updated">Last updated: July 2026</p>
+
+        <h3>What we collect</h3>
+        <p>TrustLens AI analyzes the review text and star rating you paste into the analyzer. That text is sent to our prediction service for the sole purpose of generating a verdict, confidence score, and explanation.</p>
+
+        <h3>Where your scan history lives</h3>
+        <p>Your past scans are stored locally in your browser's storage, not on our servers. Clearing your browser data or using the "Clear History" button removes it permanently.</p>
+
+        <h3>What we don't do</h3>
+        <p>We don't sell review text to third parties, use it to train models without disclosure, or share it with advertisers. The Chrome extension only reads review content on supported pages when you have it active.</p>
+
+        <h3>Your choices</h3>
+        <p>You can clear your local scan history at any time from the sidebar. Since analysis happens per request, simply not submitting a review keeps it out of our systems entirely.</p>
+
+        <h3>Contact</h3>
+        <p>Questions about this policy can be directed to the TrustLens AI team through the project's repository.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="legal-modal-overlay hidden" id="termsOfUseModal">
+    <div class="glass-card legal-modal">
+      <div class="legal-modal-header">
+        <h2>Terms of Use</h2>
+        <button class="icon-btn-secondary legal-modal-close" data-close-modal aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="legal-modal-body">
+        <p class="legal-updated">Last updated: July 2026</p>
+
+        <h3>Acceptance</h3>
+        <p>By using TrustLens AI, you agree to use it for evaluating review authenticity, and not for any unlawful or abusive purpose.</p>
+
+        <h3>Nature of the results</h3>
+        <p>Verdicts, confidence scores, and risk levels are model-generated estimates, not certified fact. Treat them as a decision aid, not a guarantee about any individual review or reviewer.</p>
+
+        <h3>No liability</h3>
+        <p>TrustLens AI is provided as-is, without warranties of any kind. We aren't liable for decisions made based on its output, including purchasing or moderation decisions.</p>
+
+        <h3>Acceptable use</h3>
+        <p>Don't use the analyzer or extension to scrape, harass, or misrepresent real reviewers, or to circumvent a platform's own review policies.</p>
+
+        <h3>Changes</h3>
+        <p>These terms may be updated as the product evolves. Continued use after an update means you accept the revised terms.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="./js/app.js"></script>
+</body>
+</html>

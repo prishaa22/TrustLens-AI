@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "TrustLens AI",
+  "version": "1.0",
+
+  "description": "Detect fake reviews using AI",
+
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "https://*.amazon.in/*",
+    "https://*.amazon.com/*",
+    "https://*.flipkart.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.amazon.in/*",
+        "https://*.amazon.com/*",
+        "https://*.flipkart.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

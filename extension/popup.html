@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TrustLens AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+
+<div class="popup-shell">
+
+    <header class="popup-header">
+        <div class="logo-mark"><span class="logo-dot"></span></div>
+        <span class="popup-title">TrustLens<span class="accent">AI</span></span>
+    </header>
+
+    <div id="statsContainer">
+
+        <div id="emptyState" class="empty-state">
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                <circle cx="12" cy="12" r="9"></circle>
+                <circle cx="12" cy="12" r="4.5"></circle>
+                <circle cx="12" cy="12" r="0.6" fill="currentColor"></circle>
+            </svg>
+            <p>No scan yet</p>
+            <span class="empty-sub">Open an Amazon or Flipkart product page and wait a few seconds.</span>
+        </div>
+
+        <div id="statsView" class="stats-view hidden">
+
+            <div class="trust-ring-wrap">
+                <svg class="trust-ring-svg" viewBox="0 0 120 120">
+                    <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+                    <circle class="ring-fill" id="trustRingFill" cx="60" cy="60" r="52"
+                            stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+                </svg>
+                <div class="ring-center">
+                    <span id="trustScoreValue">--</span><span class="ring-percent">%</span>
+                    <span class="ring-label">Trust Score</span>
+                </div>
+            </div>
+
+            <div class="counts-row">
+                <div class="count-chip genuine">
+                    <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2 4 5v6c0 5 3.4 8.7 8 9 4.6-.3 8-4 8-9V5l-8-3Z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                    <span class="count-num" id="genuineCount">0</span>
+                    <span class="count-label">Genuine</span>
+                </div>
+                <div class="count-chip fake">
+                    <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.3 3.6 2.6 17a1.8 1.8 0 0 0 1.6 2.7h15.6a1.8 1.8 0 0 0 1.6-2.7L13.7 3.6a1.8 1.8 0 0 0-3.4 0Z"></path>
+                        <path d="M12 9v4"></path>
+                        <path d="M12 16.2h.01"></path>
+                    </svg>
+                    <span class="count-num" id="fakeCount">0</span>
+                    <span class="count-label">Fake</span>
+                </div>
+            </div>
+
+            <p id="totalLabel" class="total-label">0 reviews analyzed</p>
+            <p id="coverageNotice" class="coverage-notice hidden"></p>
+            <p id="staleNotice" class="stale-notice hidden">This is from a previous page — reload the current product page to rescan.</p>
+        </div>
+    </div>
+
+</div>
+
+<script src="popup.js"></script>
+
+</body>
+</html>

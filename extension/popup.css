@@ -1,0 +1,227 @@
+:root {
+  --bg-primary: #0A0A0D;
+  --bg-card: #131318;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #F2F1F5;
+  --text-secondary: #9A98A3;
+  --text-muted: #5C5A63;
+
+  --color-primary: #D9407A;
+  --color-success: #4FAE68;
+  --color-success-bg: rgba(79, 174, 104, 0.12);
+  --color-success-border: rgba(79, 174, 104, 0.30);
+  --color-danger: #E14D5C;
+  --color-danger-bg: rgba(225, 77, 92, 0.13);
+  --color-danger-border: rgba(225, 77, 92, 0.32);
+  --color-warning: #D9A441;
+
+  --font-sans: 'Karla', 'Public Sans', sans-serif;
+  --font-title: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+}
+
+body {
+  width: 300px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.popup-shell {
+  padding: 1.2rem 1.3rem 1.5rem 1.3rem;
+}
+
+/* Header */
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.logo-mark {
+  width: 22px;
+  height: 22px;
+  background: var(--color-primary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.logo-dot {
+  width: 7px;
+  height: 7px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+.popup-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.3px;
+}
+.popup-title .accent {
+  color: var(--color-primary);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.6rem 0.5rem 1rem 0.5rem;
+  color: var(--text-secondary);
+}
+.empty-icon {
+  width: 34px;
+  height: 34px;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+}
+.empty-state p {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+.empty-sub {
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Trust ring */
+.trust-ring-wrap {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  margin: 0.2rem auto 1.2rem auto;
+}
+.trust-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 9;
+}
+.ring-fill {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 9;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+}
+.ring-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.ring-center #trustScoreValue {
+  font-family: var(--font-title);
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.ring-percent {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.ring-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+/* Genuine / Fake chips */
+.counts-row {
+  display: flex;
+  gap: 0.7rem;
+  margin-bottom: 1.1rem;
+}
+.count-chip {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+.count-chip.genuine {
+  background: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success);
+}
+.count-chip.fake {
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
+}
+.chip-icon {
+  width: 18px;
+  height: 18px;
+}
+.count-num {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.count-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.total-label {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.coverage-notice {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.6rem;
+  line-height: 1.5;
+}
+
+.stale-notice {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--color-warning);
+  background: rgba(217, 164, 65, 0.1);
+  border: 1px solid rgba(217, 164, 65, 0.25);
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  margin-top: 0.8rem;
+  line-height: 1.5;
+}
