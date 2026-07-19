@@ -170,20 +170,19 @@ body {
   cursor: pointer;
 }
 .logo-mark {
-  width: 26px;
-  height: 26px;
-  background: var(--color-primary);
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.logo-dot {
-  width: 8px;
-  height: 8px;
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: none;
+.logo-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-primary);
+  stroke-width: 2.8;
 }
 .logo-highlight {
   color: var(--color-primary);
@@ -662,14 +661,28 @@ body.light-theme .history-item-confidence {
 .galaxy-ring {
   position: absolute;
   top: 50%; left: 50%;
-  border: 1px solid var(--border-color);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, var(--border-color));
   border-radius: 50%;
   transform: translate(-50%, -50%);
+  opacity: 0.92;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary) 22%, transparent);
+  animation: galaxy-ring-glow 5.5s ease-in-out infinite;
 }
 .galaxy-ring.ring-1 { width: 32%; height: 32%; }
 .galaxy-ring.ring-2 { width: 54%; height: 54%; }
 .galaxy-ring.ring-3 { width: 76%; height: 76%; }
 .galaxy-ring.ring-4 { width: 98%; height: 98%; }
+
+@keyframes galaxy-ring-glow {
+  0%, 100% {
+    opacity: 0.9;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--color-primary) 45%, transparent);
+  }
+}
 
 .galaxy-core {
   position: relative;

@@ -826,6 +826,20 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ----------------------------------------------------
      DASHBOARD REVEAL & RENDERING
      ---------------------------------------------------- */
+  function scrollToResultsSection() {
+    if (!resultSection) return;
+
+    const navbar = document.querySelector('.navbar');
+    const navbarHeight = navbar ? navbar.offsetHeight : 0;
+    const headingOffset = 96;
+    const targetY = resultSection.getBoundingClientRect().top + window.scrollY - navbarHeight - headingOffset;
+
+    window.scrollTo({
+      top: Math.max(targetY, 0),
+      behavior: 'smooth'
+    });
+  }
+
   function showDashboard(data) {
     // 1. Transition columns
     appMain.classList.add('dashboard-active');
@@ -835,12 +849,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Each new scan starts with Advanced Analysis collapsed
     collapseAdvancedAnalysis();
     
-    // Smooth scroll down to result on mobile
-    if (window.innerWidth < 1200) {
-      setTimeout(() => {
-        resultSection.scrollIntoView({ behavior: 'smooth' });
-      }, 500);
-    }
+    // Smooth scroll to the results dashboard so users land on the report
+    setTimeout(() => {
+      scrollToResultsSection();
+    }, 250);
 
     // 2. Render Verdict Card
     const isFake = data.verdict === 'Fake Review';
