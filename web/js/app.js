@@ -1219,6 +1219,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   navLogoBtn.addEventListener('click', goHome);
 
+  // Nav links (About/How It Works/Features/Technology/FAQ) should leave the
+  // dashboard view first if it's active, since those sections are hidden
+  // while dashboard-active is set, then scroll to the target section.
+  document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const targetId = link.getAttribute('href').slice(1);
+      const targetEl = document.getElementById(targetId);
+      if (!targetEl) return;
+
+      if (document.body.classList.contains('dashboard-active')) {
+        e.preventDefault();
+        goHome();
+        setTimeout(() => {
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+        }, 350);
+      }
+      // If dashboard isn't active, let the default anchor jump/smooth-scroll happen normally.
+    });
+  });
+
   // Advanced Analysis collapsible toggle
   function collapseAdvancedAnalysis() {
     advancedAnalysisSection.classList.remove('expanded');
