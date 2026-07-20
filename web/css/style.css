@@ -904,6 +904,11 @@ body.light-theme .history-item-confidence {
   position: relative;
 }
 
+/* Hide homepage content sections while the analysis dashboard is active */
+.app-container.dashboard-active .content-section {
+  display: none;
+}
+
 .app-container.dashboard-active .workspace-grid {
   grid-template-columns: 360px 1fr;
   max-width: 1400px;
